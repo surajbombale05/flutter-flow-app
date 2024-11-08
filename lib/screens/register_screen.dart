@@ -1,36 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_flow_app/controller/login_controller.dart';
 import 'package:flutter_flow_app/screens/home_screen.dart';
-import 'package:flutter_flow_app/screens/register_screen.dart';
+import 'package:flutter_flow_app/screens/login_screen.dart';
 import 'package:flutter_flow_app/widgets/text_widgets.dart';
 import 'package:get/get.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final LoginController _controller = Get.put(LoginController());
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
-  Widget buildErrorText(String errorText) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 5, left: 10),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          errorText,
-          style: const TextStyle(color: Colors.red, fontSize: 12),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,79 +41,54 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const TextWidget(
-                    text: "Welcome Back!",
+                    text: "Create Account",
                     fontSize: 28,
                     color: Colors.white,
                   ),
                   const SizedBox(height: 10),
                   const TextWidget(
-                    text: "Login to your account",
+                    text: "Register to get started",
                     fontSize: 16,
                     color: Colors.white60,
                   ),
                   const SizedBox(height: 30),
-                  TextFormField(
+                  buildTextField(
                     controller: _emailController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
-                      hintText: "Email",
-                      hintStyle: const TextStyle(color: Colors.white70),
-                      prefixIcon: const Icon(Icons.mail, color: Colors.white),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
+                    hintText: "Email",
+                    icon: Icons.mail,
                   ),
                   Obx(() => _controller.emailError.isNotEmpty
                       ? buildErrorText(_controller.emailError.value)
                       : Container()),
                   const SizedBox(height: 20),
-                  TextFormField(
+                  buildTextField(
                     controller: _passwordController,
+                    hintText: "Password",
+                    icon: Icons.lock,
                     obscureText: true,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
-                      hintText: "Password",
-                      hintStyle: const TextStyle(color: Colors.white70),
-                      prefixIcon: const Icon(Icons.lock, color: Colors.white),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
                   ),
                   Obx(() => _controller.passwordError.isNotEmpty
                       ? buildErrorText(_controller.passwordError.value)
                       : Container()),
                   const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Obx(
-                        () => Checkbox(
-                          value: _controller.isRememberMe.value,
-                          onChanged: (value) {
-                            _controller.updateIsRememberMe();
-                          },
-                        ),
-                      ),
-                      const TextWidget(
-                          text: "Remember Me", color: Colors.white),
-                    ],
+                  buildTextField(
+                    controller: _confirmPasswordController,
+                    hintText: "Confirm Password",
+                    icon: Icons.lock,
+                    obscureText: true,
                   ),
+                  Obx(() => _controller.confirmPasswordError.isNotEmpty
+                      ? buildErrorText(_controller.confirmPasswordError.value)
+                      : Container()),
                   const SizedBox(height: 30),
                   GestureDetector(
                     onTap: () async {
-                      bool isLoggedIn = await _controller.signInWithEmail(
+                      bool isRegistered = await _controller.registerWithEmail(
                         _emailController.text.trim(),
                         _passwordController.text.trim(),
+                        _confirmPasswordController.text.trim(),
                       );
-                      if (isLoggedIn) {
+                      if (isRegistered) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -146,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       alignment: Alignment.center,
                       child: const TextWidget(
-                        text: "Log In",
+                        text: "Register",
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -158,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const TextWidget(
-                        text: "Don't have an account?",
+                        text: "Already have an account?",
                         color: Colors.white,
                       ),
                       GestureDetector(
@@ -166,12 +130,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const RegisterScreen(),
+                              builder: (context) => const LoginScreen(),
                             ),
                           );
                         },
                         child: const TextWidget(
-                          text: " Register",
+                          text: " Log In",
                           color: Colors.lightBlueAccent,
                         ),
                       ),
@@ -181,6 +145,43 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildTextField({
+    required TextEditingController controller,
+    required String hintText,
+    required IconData icon,
+    bool obscureText = false,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscureText,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.1),
+        hintText: hintText,
+        hintStyle: const TextStyle(color: Colors.white70),
+        prefixIcon: Icon(icon, color: Colors.white),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
+  Widget buildErrorText(String errorText) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5, left: 10),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          errorText,
+          style: const TextStyle(color: Colors.red, fontSize: 12),
         ),
       ),
     );

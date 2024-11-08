@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "859874397355",
-    "project_id": "flutter-flow-app-5475b",
-    "storage_bucket": "flutter-flow-app-5475b.firebasestorage.app"
+    "project_number": "722236906357",
+    "project_id": "flow-app-fcd6e",
+    "storage_bucket": "flow-app-fcd6e.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:859874397355:android:4aba8b9195f4d8e3923bee",
+        "mobilesdk_app_id": "1:722236906357:android:4de5a50e36c117f6cd113c",
         "android_client_info": {
           "package_name": "com.example.flutter_flow_app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDN9kULdTIwLEd1dCAboHiwzMmGEomB-JQ"
+          "current_key": "AIzaSyAxQCwtTrPSDY3jVS-XhzUjgvsMn8eYMO0"
         }
       ],
       "services": {

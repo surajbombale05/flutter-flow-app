@@ -8,6 +8,7 @@ class ImageController extends GetxController {
   final isLoading = false.obs;
   final currentPage = 1.obs;
   final searchQuery = ''.obs;
+  final hasMoreImages = true.obs; // Track if more images are available
 
   ImageController(this.apiService);
 
@@ -18,6 +19,8 @@ class ImageController extends GetxController {
   }
 
   Future<void> fetchImages({bool isSearch = false}) async {
+    if (!hasMoreImages.value || isLoading.value) return; // Prevent redundant calls
+
     isLoading(true);
     try {
       List<ImageModel> newImages;
@@ -26,12 +29,14 @@ class ImageController extends GetxController {
       } else {
         newImages = await apiService.fetchImages(page: currentPage.value);
       }
-      if (currentPage.value == 1) {
-        images.assignAll(newImages);
+      
+      // Update the list and check if more images are available
+      if (newImages.isEmpty) {
+        hasMoreImages(false);
       } else {
         images.addAll(newImages);
+        currentPage.value++;
       }
-      currentPage.value++;
     } catch (e) {
       print(e);
     } finally {
@@ -42,6 +47,12 @@ class ImageController extends GetxController {
   void resetAndSearch(String query) {
     searchQuery.value = query;
     currentPage.value = 1;
+    images.clear();
+    hasMoreImages(true); // Reset to allow new pagination
     fetchImages(isSearch: true);
+  }
+
+  void loadNextBatch() {
+    fetchImages(isSearch: searchQuery.value.isNotEmpty);
   }
 }
